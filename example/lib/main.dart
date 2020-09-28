@@ -24,7 +24,7 @@ class CarouselDemo extends StatelessWidget {
         '/basic': (ctx) => BasicDemo(),
         '/nocenter': (ctx) => NoCenterDemo(),
         '/image': (ctx) => ImageSliderDemo(),
-        '/complicated': (ctx) => CompilcatedImageDemo(),
+        '/complicated': (ctx) => ComplicatedImageDemo(),
         '/enlarge': (ctx) => EnlargeStrategyDemo(),
         '/manual': (ctx) => ManuallyControlledSlider(),
         '/noloop': (ctx) => NoonLoopingDemo(),
@@ -186,7 +186,7 @@ final List<Widget> imageSliders = imgList.map((item) => Container(
   ),
 )).toList();
 
-class CompilcatedImageDemo extends StatelessWidget {
+class ComplicatedImageDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
@@ -498,7 +498,7 @@ class _CarouselChangeReasonDemoState extends State<CarouselChangeReasonDemo> {
   String reason = '';
   final CarouselController _controller = CarouselController();
 
-  onPageChange(int index, CarouselPageChangedReason changeReason) {
+  void onPageChange(int index, CarouselPageChangedReason changeReason) {
     setState(() {
       reason = changeReason.toString();
     });
@@ -571,7 +571,7 @@ class KeepPageviewPositionDemo extends StatelessWidget {
               options: CarouselOptions(
                 aspectRatio: 2.0,
                 enlargeCenterPage: true,
-                pageViewKey: PageStorageKey('carousel_slider'),
+                pageViewKey: PageStorageKey<String>('carousel_slider'),
               ),
               items: imageSliders,
             )

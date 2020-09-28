@@ -119,6 +119,11 @@ class CarouselSliderState extends State<CarouselSlider>
   Timer getTimer() {
     return widget.options.autoPlay
         ? Timer.periodic(widget.options.autoPlayInterval, (_) {
+            final route = ModalRoute.of(context);
+            if (route?.isCurrent == false) {
+              return;
+            }
+
             CarouselPageChangedReason previousReason = mode;
             changeMode(CarouselPageChangedReason.timed);
             int nextPage = carouselState.pageController.page.round() + 1;
@@ -142,7 +147,7 @@ class CarouselSliderState extends State<CarouselSlider>
         : null;
   }
 
- void clearTimer() {
+  void clearTimer() {
     if (timer != null) {
       timer?.cancel();
       timer = null;
@@ -256,6 +261,7 @@ class CarouselSliderState extends State<CarouselSlider>
     return getGestureWrapper(PageView.builder(
       physics: widget.options.scrollPhysics,
       scrollDirection: widget.options.scrollDirection,
+      pageSnapping: widget.options.pageSnapping,
       controller: carouselState.pageController,
       reverse: widget.options.reverse,
       itemCount: widget.options.enableInfiniteScroll ? null : widget.itemCount,
@@ -285,10 +291,9 @@ class CarouselSliderState extends State<CarouselSlider>
               double itemOffset;
               // pageController.page can only be accessed after the first build,
               // so in the first build we calculate the itemoffset manually
-              if (carouselState.pageController.position.minScrollExtent ==
-                      null ||
-                  carouselState.pageController.position.maxScrollExtent ==
-                      null) {
+              try {
+                itemOffset = carouselState.pageController.page - idx;
+              } catch (e) {
                 BuildContext storageContext = carouselState
                     .pageController.position.context.storageContext;
                 final double previousSavedPosition =
@@ -300,8 +305,6 @@ class CarouselSliderState extends State<CarouselSlider>
                   itemOffset =
                       carouselState.realPage.toDouble() - idx.toDouble();
                 }
-              } else {
-                itemOffset = carouselState.pageController.page - idx;
               }
               final distortionRatio =
                   (1 - (itemOffset.abs() * 0.3)).clamp(0.0, 1.0);
